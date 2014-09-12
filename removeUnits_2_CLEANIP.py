@@ -19,7 +19,6 @@ def remUnits(text):
 		pieces = temt.split()
 		nams = []
 		for guess in pieces:
-			print guess
 			try:
 				frag = int(guess)
 				nams.append(frag)
