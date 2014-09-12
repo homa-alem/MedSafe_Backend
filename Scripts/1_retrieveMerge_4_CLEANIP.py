@@ -280,8 +280,8 @@ def getData(startYear, startMonth, endYear, endMonth):
 
 #only run this code if running this standalone
 if __name__ == "__main__":
-    #basepath = './../../New_Data';
-    #os.chdir(basepath)
+    basepath = './../Original_Data';
+    os.chdir(basepath)
     for Year in range(2007, 2013):
         #print 'Year '+str(Year);
         startYear = Year;
