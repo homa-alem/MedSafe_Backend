@@ -1,7 +1,7 @@
 #Look through files for unique recalls
 #If unique, add data to output worksheet and running hash
 #If copy found, modify output worksheet and hash
-#Save data in output worksheet
+#Save data in output worksheets
 
 import xlrd
 import xlwt
