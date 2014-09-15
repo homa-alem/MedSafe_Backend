@@ -8,7 +8,9 @@ import xlwt
 import os
 from Levenshtein import *
 import codecs
-from removeUnits_2_CLEANIP import remUnits
+
+remUnit = __import__('3_removeUnits')
+remUnits = remUnit.remUnits
 
 #define locations
 REASON = 14

@@ -9,11 +9,12 @@ import xlwt
 from BeautifulSoup import BeautifulSoup
 import os
 from time import sleep
-from removeUnits_2_CLEANIP import remUnits
-import calendar
 import re
 from datetime import datetime
 from dateutil import parser
+
+remUnit = __import__('3_removeUnits')
+remUnits = remUnit.remUnits
 
 #global definition for browser and its settings
 mech = mechanize.Browser()
