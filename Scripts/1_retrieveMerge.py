@@ -283,10 +283,10 @@ def getData(startYear, startMonth, endYear, endMonth):
 if __name__ == "__main__":
     basepath = './../Original_Data';
     os.chdir(basepath)
-    for Year in range(2007, 2013):
+    for Year in range(2007, 2008):
         #print 'Year '+str(Year);
         startYear = Year;
         endYear = Year;
         startMonth = 1;
-        endMonth = 12;
+        endMonth = 2;
         getData(startYear, startMonth, endYear, endMonth)

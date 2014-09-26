@@ -40,11 +40,11 @@ def getMaxNotHead(possib):
             ind = i
     return ind
 
-def compareRecall(path, procodes, Procodes_Hash, datafiles):
+def compareRecall(pathProc, pathData, procodes, Procodes_Hash, datafiles):
     curr_path = os.getcwd()
     newbook = xlwt.Workbook('utf-8')
     newsheet = newbook.add_sheet('sheet1', cell_overwrite_ok = True)
-    os.chdir(path)
+    os.chdir(pathProc)
     #dest = open("procCheck.txt")
     probook = xlrd.open_workbook(procodes)
     if(not os.path.exists(procodes)):
@@ -55,9 +55,11 @@ def compareRecall(path, procodes, Procodes_Hash, datafiles):
         prosheet = probook.sheet_by_index(0)
     procode_rows = prosheet.nrows
     curr_row = 1
+    os.chdir(pathData)
     for file in datafiles:
         count = 0
         if(not os.path.exists(file)):
+            print 'does not exist'
             continue
         databook = xlrd.open_workbook(file)
         try:
@@ -139,31 +141,56 @@ def compareRecall(path, procodes, Procodes_Hash, datafiles):
             curr_row = curr_row + 1
         print str(found_record)+' of '+str(data_rows)+' recalls were already classified.';
         print 'An additional ' + str(fixed_record)+' recalls were classified';
-    newbook.save(path+'Recalls_Procodes_Added.xls')
+    newbook.save(pathProc+'Recalls_Procodes_Added.xls')
     os.chdir(curr_path)
 
-path = "./../Research Data/"
-procodes = "All_Recalls_procodes.xls"
+def developHash(pathProc, procodes):
+    #find and open the procode file
+    os.chdir(pathProc)
+    probook = xlrd.open_workbook(procodes)
 
-# Make a Hash of all Recalls_Procodes
-os.chdir(path)
-probook = xlrd.open_workbook(procodes)
-if(not os.path.exists(procodes)):
-    print 'Invalid procodes file given.'
-try:
-    prosheet = probook.sheet_by_name('sheet1')
-except:
+    #get the datasheet
+    if(not os.path.exists(procodes)):
+        print 'Invalid procodes file given.'
     prosheet = probook.sheet_by_index(0)
-procode_rows = prosheet.nrows
-Procodes_Hash = {'Number':('Medical_Specialty','Procode','Device_Name')}
-for k in range(1, procode_rows):
-    Recall_Num = str(prosheet.cell_value(k, 0))
-    Specialty = str(prosheet.cell_value(k, 5))
-    Procode = str(prosheet.cell_value(k, 6))
-    Device_Name = str(prosheet.cell_value(k, 7))
-    Procodes_Hash[Recall_Num] = (Specialty, Procode, Device_Name);
+    
+    #make a Hash of all of the known Recalls_Procodes
+    procode_rows = prosheet.nrows
+    Procodes_Hash = {'Number':('Medical_Specialty','Procode','Device_Name')}
+    for k in range(1, procode_rows):
+        Recall_Num = str(prosheet.cell_value(k, 0))
+        Specialty = str(prosheet.cell_value(k, 5))
+        Procode = str(prosheet.cell_value(k, 6))
+        Device_Name = str(prosheet.cell_value(k, 7))
+        Procodes_Hash[Recall_Num] = (Specialty, Procode, Device_Name);
+    return Procodes_Hash
 
-datafiles = ["2006.xls","2007.xls","2008.xls","2009.xls","2010.xls","2011.xls","2012.xls","2013.xls"]
-for i in xrange(len(datafiles)):
-    datafiles[i] = 'unique'+datafiles[i]
-compareRecall(path, procodes, Procodes_Hash, datafiles)
+
+if(__name__ == '__main__'):
+    pathProc = "./../Other_Data/"
+    pathData = "./../Unique_Data/"
+    procodes = "All_Recalls_procodes.xls"
+
+    # Make a Hash of all Recalls_Procodes
+    os.chdir(pathProc)
+    probook = xlrd.open_workbook(procodes)
+    if(not os.path.exists(procodes)):
+        print 'Invalid procodes file given.'
+    try:
+        prosheet = probook.sheet_by_name('sheet1')
+    except:
+        prosheet = probook.sheet_by_index(0)
+    procode_rows = prosheet.nrows
+    Procodes_Hash = {'Number':('Medical_Specialty','Procode','Device_Name')}
+    for k in range(1, procode_rows):
+        Recall_Num = str(prosheet.cell_value(k, 0))
+        Specialty = str(prosheet.cell_value(k, 5))
+        Procode = str(prosheet.cell_value(k, 6))
+        Device_Name = str(prosheet.cell_value(k, 7))
+        Procodes_Hash[Recall_Num] = (Specialty, Procode, Device_Name);
+
+    #datafiles = ["2006.xls","2007.xls","2008.xls","2009.xls","2010.xls","2011.xls","2012.xls","2013.xls"]
+    datafiles = ["2007.xls"]
+    for i in xrange(len(datafiles)):
+        datafiles[i] = 'unique'+datafiles[i]
+    compareRecall(pathProc, pathData, procodes, Procodes_Hash, datafiles)
