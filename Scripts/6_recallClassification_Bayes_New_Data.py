@@ -41,8 +41,16 @@ def selectFeatures(train_set, train_text, k):
     #words = [wnl.lemmatize(t, 'v') for t in words]
     print str(len(words))+' words found.'
 
+    clean_words = []
+    for word in words:
+        try:
+            v = nltk.pos_tag(word)
+            clean_words.append(word)
+        except:
+            continue
+
     # Tagging of the parts of speech
-    tagged_words = nltk.pos_tag(words)
+    tagged_words = nltk.pos_tag(clean_words)
     words = [word for (word, tag) in tagged_words if tag in ['NN','JJ','NNS','RB','VB','VBD','VBG','VBN','VBP','VBZ']]
     #words = set(words).intersection(set(unigrams+ bigrams+trigrams));
     # Get the frequency of words

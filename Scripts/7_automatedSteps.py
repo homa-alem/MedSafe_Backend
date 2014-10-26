@@ -10,7 +10,7 @@ import os
 
 #markers for which sections to execute
 pieces = {"Retrieve": False, "Unique": True, "ClassifyS1": True,
-        "ClassifyS2": False, "Procodes": True}
+        "ClassifyS2": True, "Procodes": True}
 
 '''
     SCRIPT 1 --> Retrieve the data
@@ -23,7 +23,7 @@ if(pieces["Retrieve"]):
     basepath = './../Original_Data';
     os.chdir(basepath)
 
-    #get data from 2005-2012
+    #get data from 2006-2012
     for Year in range(2007, 2008):
         print 'Year '+str(Year);
         startYear = Year;
