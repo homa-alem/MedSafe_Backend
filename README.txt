@@ -5,13 +5,13 @@ This code is for automated retrieval of medical device recalls data from the FDA
 
 For more details please refer to the following publications:
 
-**[1] "Analysis of Safety-Critical Computer Failures in Medical Devices":** http://web.engr.illinois.edu/~alemzad1/papers/Alemzadeh_IEEES&P_2013.pdf
+[1] "Analysis of Safety-Critical Computer Failures in Medical Devices": http://web.engr.illinois.edu/~alemzad1/papers/Alemzadeh_IEEES&P_2013.pdf
 
-**[2] "Automated Classification of Computer-based Medical Device Recalls: An Application of Natural Language Processing and Statistical Learning"**: http://web.engr.illinois.edu/~alemzad1/papers/CBMS_14.pdf
+[2] "Automated Classification of Computer-based Medical Device Recalls: An Application of Natural Language Processing and Statistical Learning": http://web.engr.illinois.edu/~alemzad1/papers/CBMS_14.pdf
 
 If you use or modify this code in any form, please include the citation for paper [1]:
 
-**H. Alemzadeh, R. K. Iyer, Z. Kalbarczyk, and J. Raman, “Analysis of Safety-Critical Computer Failures in Medical Devices,” IEEE Security and Privacy, vol. 11, no. 4, pp. 14-26, July/August 2013.**
+H. Alemzadeh, R. K. Iyer, Z. Kalbarczyk, and J. Raman, “Analysis of Safety-Critical Computer Failures in Medical Devices,” IEEE Security and Privacy, vol. 11, no. 4, pp. 14-26, July/August 2013.
 
 
 Copyright (C) 2015 University of Illinois Board of Trustees, DEPEND Research Group, Homa Alemzadeh and Raymond Hoagland
