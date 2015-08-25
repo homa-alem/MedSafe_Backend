@@ -4,9 +4,7 @@ Summary and licensing information
 This code is for automated retrieval of medical device recalls data from the FDA Recalls Database and classification of Computer-related Recalls.
 
 For more details please refer to the following publications:
-
 [1] "Analysis of Safety-Critical Computer Failures in Medical Devices": http://web.engr.illinois.edu/~alemzad1/papers/Alemzadeh_IEEES&P_2013.pdf
-
 [2] "Automated Classification of Computer-based Medical Device Recalls: An Application of Natural Language Processing and Statistical Learning": http://web.engr.illinois.edu/~alemzad1/papers/CBMS_14.pdf
 
 If you use or modify this code in any form, please include the citation for paper [1]:
