@@ -40,7 +40,7 @@ def initProg(startDate, endDate):
         #establish fields we want to pull
         fields = ["Recall Number", "Recall_Event_ID",
                   "Device_Type", "Product_Code", "Regulation", "Specialty", "Panel", "Approval",
-                  "Product", "Main_Name", "Recall_Class", "Date Posted", "Recall_Year", "Recalling Firm",
+                  "Product", "Main_Name", "Recall_Class", "Date Initiated by Firm", "Recall_Year", "Recalling Firm",
                   "Reason", "FDA Determined", "Action", "Instructions",
                   "Cleaned_Quantity", "Quantity in Commerce", "Distribution",
                   "Recall Status", "Termination_Date", "Time_to_Terminate"]
@@ -134,15 +134,19 @@ def initProg(startDate, endDate):
                         panel_indx = fields.index('Panel')
                         approval_indx = fields.index('Approval')
                         for link in mech.links():
-
+			
                             #check if this is the link we want, if so follow it
                             if (link.url.find('/classification.cfm?ID=')>-1):
                                 mech.click_link(link)
                                 response = mech.follow_link(link)
-
+                                
                                 #create soup from this html
                                 soup2 = BeautifulSoup(mech.response().read())
-                                table2 = soup2.find("table", border="0", cellpadding="0", cellspacing=5, width="500")
+                                #table2 = soup2.find("table", border="0", cellpadding="0", cellspacing=5, width="600")
+                                for tag in soup2.findAll(text=re.compile('Review Panel')):
+        							table2 = tag.findParent('table')
+        							break;
+                               
                                 for table2_tr in table2.findAll('tr'):
                                     col2 = table2_tr.findAll('th');
 
@@ -162,9 +166,11 @@ def initProg(startDate, endDate):
                                 break;
 
                         #find the table containing the information needed (in this case unique identifier is that cellpadding is 2)
-                        table = soup.find("table", cellpadding = 2)
+                        tables = soup.findAll("table")
+                        table = [t for t in tables if t.find(text=re.compile('Recall Number'))][0]
+                        
                         if(table == None):
-                                continue
+                                continues
                         for row in table.findAll('tr'):
                                 #look for the field identifier
                                 col = row.findAll('th')
@@ -187,10 +193,13 @@ def initProg(startDate, endDate):
                                                 else:
                                                     indx = fields.index(field)
                                                     varis[indx] = dataStrip(row)
-
+                                                    #print row.find('td').text
+                                                    #print varis[indx]
+                                                    #print "\n"
+						
                         # Fields that are extracted based on other fields
                         # Year
-                        date_indx = fields.index('Date Posted')
+                        date_indx = fields.index('Date Initiated by Firm')
                         year_indx = fields.index('Recall_Year')
                         varis[year_indx] = str(varis[date_indx]).split(',')[1]
 
@@ -202,6 +211,7 @@ def initProg(startDate, endDate):
                         # Termination Date
                         status_indx = fields.index('Recall Status')
                         tdate_indx = fields.index('Termination_Date')
+
                         if ('Terminated' in varis[status_indx]):
                             varis[tdate_indx] = str(varis[status_indx]).split('on ')[1].rstrip();
                             varis[status_indx] = 'Terminated'
