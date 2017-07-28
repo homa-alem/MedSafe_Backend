@@ -6,7 +6,7 @@
 #standard imports
 import mechanize
 import xlwt
-from BeautifulSoup import BeautifulSoup
+from BeautifulSoup import BeautifulSoup, Tag
 import os
 from time import sleep
 import re
@@ -34,7 +34,9 @@ def dataStrip(row):
 
         return strong
 
-#code for initialization
+
+
+
 def initProg(startDate, endDate):
 
         #establish fields we want to pull
@@ -134,19 +136,19 @@ def initProg(startDate, endDate):
                         panel_indx = fields.index('Panel')
                         approval_indx = fields.index('Approval')
                         for link in mech.links():
-			
+
                             #check if this is the link we want, if so follow it
                             if (link.url.find('/classification.cfm?ID=')>-1):
                                 mech.click_link(link)
                                 response = mech.follow_link(link)
-                                
+
                                 #create soup from this html
                                 soup2 = BeautifulSoup(mech.response().read())
                                 #table2 = soup2.find("table", border="0", cellpadding="0", cellspacing=5, width="600")
                                 for tag in soup2.findAll(text=re.compile('Review Panel')):
         							table2 = tag.findParent('table')
         							break;
-                               
+
                                 for table2_tr in table2.findAll('tr'):
                                     col2 = table2_tr.findAll('th');
 
@@ -168,7 +170,7 @@ def initProg(startDate, endDate):
                         #find the table containing the information needed (in this case unique identifier is that cellpadding is 2)
                         tables = soup.findAll("table")
                         table = [t for t in tables if t.find(text=re.compile('Recall Number'))][0]
-                        
+
                         if(table == None):
                                 continues
                         for row in table.findAll('tr'):
@@ -191,12 +193,14 @@ def initProg(startDate, endDate):
                                                         indx = fields.index(field)
                                                         varis[indx] = dataStrip(row)
                                                 else:
+                                                    #print field
                                                     indx = fields.index(field)
+                                                    if(field == 'Recall Status'):
+                                                        if(row.a != None):
+                                                            toRem = row.a
+                                                            toRem.extract()
                                                     varis[indx] = dataStrip(row)
-                                                    #print row.find('td').text
-                                                    #print varis[indx]
-                                                    #print "\n"
-						
+
                         # Fields that are extracted based on other fields
                         # Year
                         date_indx = fields.index('Date Initiated by Firm')
@@ -285,7 +289,6 @@ def getData(startYear, startMonth, endYear, endMonth):
                                 for k in range(0, len(response)):
                                         worksheet.write(curr_row, k, response[k][i])
                                 curr_row+=1
-                        #print 'Month '+str(month)+'='+str(curr_row-1)
         workbook.save(str(startYear)+'.xls')
         print str(curr_row-1)+' recalls saved for '+str(startYear);
 
