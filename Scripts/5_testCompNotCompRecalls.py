@@ -15,7 +15,7 @@ import csv
 import time
 from zipfile import ZipFile
 
-def testRecalls(startYear=2007, endYear=2014):
+def testRecalls(startYear=2007, endYear=2008):
     data_dir = './../Unique_Data/';
     datafiles = []
     for Year in range(startYear, endYear):

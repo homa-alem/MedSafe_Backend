@@ -7,8 +7,8 @@ from nltk.corpus import stopwords
 import re
 from nltk import bigrams
 from nltk import trigrams
-from nltk.tag.stanford import NERTagger
-from nltk.tag.stanford import POSTagger
+#from nltk.tag.stanford import NERTagger
+from nltk.tag.stanford import StanfordPOSTagger
 import xlrd
 import xlwt
 import os
