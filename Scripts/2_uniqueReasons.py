@@ -22,12 +22,14 @@ MERGE = 24
 def elimCopyReasons(basepath, filenames, destpath=''):
         num_records = 0;
 
-        #get the working directory and set basepath
-        curr_dir = os.getcwd()
-        os.chdir(basepath)
+        # curr_dir = os.getcwd()
+        # os.chdir(basepath)
 
         #loop through files
         for filename in filenames:
+        #get the working directory and set basepath
+                curr_dir = os.getcwd()
+                os.chdir(basepath)
 
                 #initialize vars
                 remCount = 0
@@ -194,5 +196,9 @@ def countUnique2(srcfiles, destfile, index):
 
 #only run this code if this is the main file
 if __name__ == "__main__":
-    files = ['2007.xls']#"Unique_Computer_Recalls_2007_2011_copy.xls"]
+    files = ['2007.xls']#, '2008.xls']#"Unique_Computer_Recalls_2007_2011_copy.xls"]
+    # for fl in files:
+    #     print fl
+    elimCopyReasons('./../Original_Data', files, './../Unique_Data')
+    files = ['2008.xls']
     elimCopyReasons('./../Original_Data', files, './../Unique_Data')
