@@ -153,7 +153,7 @@ def developHash(pathProc, procodes):
     if(not os.path.exists(procodes)):
         print 'Invalid procodes file given.'
     prosheet = probook.sheet_by_index(0)
-    
+
     #make a Hash of all of the known Recalls_Procodes
     procode_rows = prosheet.nrows
     Procodes_Hash = {'Number':('Medical_Specialty','Procode','Device_Name')}
@@ -188,9 +188,9 @@ if(__name__ == '__main__'):
         Procode = str(prosheet.cell_value(k, 6))
         Device_Name = str(prosheet.cell_value(k, 7))
         Procodes_Hash[Recall_Num] = (Specialty, Procode, Device_Name);
-
-    #datafiles = ["2006.xls","2007.xls","2008.xls","2009.xls","2010.xls","2011.xls","2012.xls","2013.xls"]
-    datafiles = ["2007.xls"]
+#datafiles are all the excell files listed in Original_Data folder
+    datafiles = os.listdir("./../Original_Data")
+    print datafiles
     for i in xrange(len(datafiles)):
         datafiles[i] = 'unique'+datafiles[i]
     compareRecall(pathProc, pathData, procodes, Procodes_Hash, datafiles)
