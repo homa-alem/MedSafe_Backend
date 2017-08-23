@@ -20,8 +20,20 @@ from textclean.textclean import textclean
 
 data_dir = './../Unique_Data/'
 #keyword_dir = './../../Research Data/Keyword_Lists'
+
 train_filename = 'Merged_Final_Unique_Recalls_2007_2011.xls'
-test_files = ["unique2007"]
+
+# get filenames from Unique_Data
+uniqueFiles = os.listdir("./../Unique_Data")
+#create list for filenames
+test_files=[]
+#check each filename for format 'unique####.xls', add to list of filenames if it matches
+for i in range(len(uniqueFiles)):
+    fileNm = uniqueFiles[i]
+    if re.match("unique[0123456789]{4}.xls",fileNm) != None:
+        test_files.append(fileNm)
+
+#test_files = ["unique2007", "unique2008"]
 #test_files = ["unique2012","unique2013"]
 
 def selectFeatures(train_set, train_text, k):
@@ -234,7 +246,7 @@ def classify():
     # Testing
     for filename in test_files:
         test_set = [];
-        test_workbook = xlrd.open_workbook(data_dir+filename+'.xls')
+        test_workbook = xlrd.open_workbook(data_dir+filename)#+'.xls')
         try:
             worksheet = test_workbook.sheet_by_index(0)
         except:
