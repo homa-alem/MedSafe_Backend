@@ -172,7 +172,7 @@ def initProg(startDate, endDate):
                         table = [t for t in tables if t.find(text=re.compile('Recall Number'))][0]
 
                         if(table == None):
-                                continues
+                                continue
                         for row in table.findAll('tr'):
                                 #look for the field identifier
                                 col = row.findAll('th')
@@ -182,6 +182,8 @@ def initProg(startDate, endDate):
                                 text = [];
                                 if ("Recall Event ID" in str(col)):
                                     a_link = row.find('a')
+                                    if a_link is None:
+                                        continue
                                     varis[event_indx] = str(a_link.contents[0]).rstrip();
 
                                 # Other Fields
@@ -193,7 +195,6 @@ def initProg(startDate, endDate):
                                                         indx = fields.index(field)
                                                         varis[indx] = dataStrip(row)
                                                 else:
-                                                    #print field
                                                     indx = fields.index(field)
                                                     if(field == 'Recall Status'):
                                                         if(row.a != None):
@@ -237,7 +238,61 @@ def initProg(startDate, endDate):
                         for i in range(0, len(varis)):
                                 varis_TOT[i].append(varis[i])
         return varis_TOT
+# TODO finish this method: recursive, calls on smaller sections of the month until we get to less than 500
+def splitSearch(startDate, endDate, month, year):
 
+    #find the day between the startDate and endDate
+    print "splitSearch: "+ startDate+", "+endDate
+    startArr = startDate.split("/")
+    endArr = endDate.split("/")
+    day1 = int(startArr[1])
+    endDay = int(endArr[1])
+    print endDay
+    midday = int((day1+endDay)/2)
+
+    if (endDay==1):
+        begMo = int(startArr[0])
+        #Thirty days has September, April, June, and November
+        if(begMo in {4, 6, 9, 11}):
+            print "Sep, Apr, Jun, Nov"
+            midday = int((day1+30)/2)
+        #All the restt have 31
+        elif(begMo in {1,3,5,7,8,10,12}):
+            print "Jan, Mar, May, Jul, Aug, Oct, Dec"
+            midday = int((day1+31)/2)
+        #except for February, which has 28
+        elif(begMo ==2):
+            print "February"
+            midday = int((day1+28)/2)
+    print "splitting!"
+    midDate = str(month).zfill(2)+'/'+str(midday).zfill(2)+'/'+str(year)
+    #search for first half of time segment
+    response = initProg(startDate, midDate)
+    #if response still too big, divide again
+    if(response == "too big"):
+        print "down another level: splitting r1"
+        response = splitSearch(startDate, midDate, month, year)
+    else:
+        print "r1 not too big"
+        #search for last half of time segment
+    #startDate2 = str(month).zfill(2)+'/'+str(midday)+'/'+str(year)
+    #endDate2 = endDate
+    response2 = initProg(midDate, endDate)
+
+    if(response2 == "too big"):
+        print "down another level: splitting r2"
+        response2 = splitSearch(midDate, endDate, month, year)
+    else:
+        print "r2 not too big"
+            # Merge two responses
+    print "Joining lists"
+    for k in range(0, len(response2)):
+        for i in range(0, len(response2[0])):
+            #print response[k]
+            response[k].append(response2[k][i]);
+    print len(response)
+    print "done!"
+    return response
 
 
 # Get Recalls Data from FDA Database for the dates specified.
@@ -259,32 +314,35 @@ def getData(startYear, startMonth, endYear, endMonth):
                 column = column+1;
         for year in range(int(startYear), int(endYear)+1):
                 for month in range(int(startMonth), int(endMonth)+1):
-
+                        print "month: "+str(month)+"\n"
                         #search start
-                        startDate = str(month).zfill(2)+'/01/'+str(year)
+                        startDate = str(month).zfill(2)+'/1/'+str(year)
 
                         #search end
                         if(month == 12):
-                                endDate = '01/01/'+str(year+1)
+                                endDate = '1/1/'+str(year+1)
                         else:
-                                endDate = str(month+1).zfill(2)+'/01/'+str(year)
+                                endDate = str(month+1).zfill(2)+'/1/'+str(year)
 
                         #check if dataset small enough
                         response = initProg(startDate, endDate)
 
                         #if dataset too big, split month in half and then go
                         if (response == 'too big'):
-                                startDate1 = startDate
-                                endDate1 = str(month).zfill(2)+'/'+'18'+'/'+str(year)
-                                startDate2 = str(month).zfill(2)+'/'+'18'+'/'+str(year)
-                                endDate2 = endDate
-
-                                response = initProg(startDate1, endDate1)
-                                response2 = initProg(startDate2, endDate2)
-                                # Merge two responses
-                                for k in range(0, len(response2)):
-                                        for i in range(0, len(response2[0])):
-                                                response[k].append(response2[k][i]);
+                            splitSearch(startDate, endDate, month, year)
+                        # if (response == 'too big'):
+                        #         startDate1 = startDate
+                        #         endDate1 = str(month).zfill(2)+'/'+'18'+'/'+str(year)
+                        #         startDate2 = str(month).zfill(2)+'/'+'18'+'/'+str(year)
+                        #         endDate2 = endDate
+                        #
+                        #         response = initProg(startDate1, endDate1)
+                        #         response2 = initProg(startDate2, endDate2)
+                        #         # Merge two responses
+                        #         for k in range(0, len(response2)):
+                        #                 for i in range(0, len(response2[0])):
+                        #                         print response[k]
+                        #                         response[k].append(response2[k][i]);
                         for i in range(0, len(response[0])):
                                 for k in range(0, len(response)):
                                         worksheet.write(curr_row, k, response[k][i])
@@ -296,10 +354,10 @@ def getData(startYear, startMonth, endYear, endMonth):
 if __name__ == "__main__":
     basepath = './../Original_Data';
     os.chdir(basepath)
-    for Year in range(2007, 2008):
-        #print 'Year '+str(Year);
+    for Year in range(2008, 2009):
+        print Year
         startYear = Year;
         endYear = Year;
-        startMonth = 1;
-        endMonth = 2;
+        startMonth = 9;
+        endMonth = 10;
         getData(startYear, startMonth, endYear, endMonth)
