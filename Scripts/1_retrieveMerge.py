@@ -218,16 +218,22 @@ def initProg(startDate, endDate):
                         tdate_indx = fields.index('Termination_Date')
 
                         if ('Terminated' in varis[status_indx]):
-                            varis[tdate_indx] = str(varis[status_indx]).split('on ')[1].rstrip();
-                            varis[status_indx] = 'Terminated'
-
+                            if('on ' in varis[status_indx]):
                             # Time to Terminate: Difference between Post Date and Terminate Date
-                            date1_string = varis[date_indx].strip()
-                            date1 = datetime.strptime(date1_string,"%B %d, %Y");
-                            date2_string = varis[tdate_indx].strip()
-                            date2 = datetime.strptime(date2_string,"%B %d, %Y");
-                            TTterm_indx = fields.index('Time_to_Terminate')
-                            varis[TTterm_indx] = (date2 - date1).days
+                                varis[tdate_indx] = str(varis[status_indx]).split('on ')[1].rstrip();
+                                date1_string = varis[date_indx].strip()
+                                date1 = datetime.strptime(date1_string,"%B %d, %Y");
+                                date2_string = varis[tdate_indx].strip()
+                                date2 = datetime.strptime(date2_string,"%B %d, %Y");
+                                TTterm_indx = fields.index('Time_to_Terminate')
+                                varis[TTterm_indx] = (date2 - date1).days
+                            else:
+                                print "no date with status givenS"
+                                varis[tdate_indx] = "N/A"
+                                TTterm_indx = fields.index('Time_to_Terminate')
+                                varis[TTterm_indx] = "N/A"
+
+                            varis[status_indx] = 'Terminated'
 
                         # Replace N/A for empty fields
                         for var in varis:
@@ -240,7 +246,6 @@ def initProg(startDate, endDate):
         return varis_TOT
 # TODO finish this method: recursive, calls on smaller sections of the month until we get to less than 500
 def splitSearch(startDate, endDate, month, year):
-
     #find the day between the startDate and endDate
     print "splitSearch: "+ startDate+", "+endDate
     startArr = startDate.split("/")
@@ -274,11 +279,9 @@ def splitSearch(startDate, endDate, month, year):
         response = splitSearch(startDate, midDate, month, year)
     else:
         print "r1 not too big"
-        #search for last half of time segment
-    #startDate2 = str(month).zfill(2)+'/'+str(midday)+'/'+str(year)
-    #endDate2 = endDate
-    response2 = initProg(midDate, endDate)
 
+    #search for last half of time segment
+    response2 = initProg(midDate, endDate)
     if(response2 == "too big"):
         print "down another level: splitting r2"
         response2 = splitSearch(midDate, endDate, month, year)
@@ -354,10 +357,10 @@ def getData(startYear, startMonth, endYear, endMonth):
 if __name__ == "__main__":
     basepath = './../Original_Data';
     os.chdir(basepath)
-    for Year in range(2008, 2009):
+    for Year in range(2007, 2018):
         print Year
         startYear = Year;
         endYear = Year;
-        startMonth = 9;
-        endMonth = 10;
+        startMonth = 1;
+        endMonth = 12;
         getData(startYear, startMonth, endYear, endMonth)
