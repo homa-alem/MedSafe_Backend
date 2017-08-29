@@ -12,10 +12,22 @@ import string
 import xlrd
 import xlwt
 import csv
+import os
 import time
 from zipfile import ZipFile
 
-def testRecalls(startYear=2007, endYear=2008):
+def testRecalls(*args):
+    if len(args)==2:
+        startYear = args[0]
+        endYear = args[1]
+    else:
+        years = []
+        files = os.listdir("./../Original_Data")
+        for fl in files:
+            years.append(int(fl.split(".")[0]))
+
+        startYear = min(years)
+        endYear = max(years)+1
     data_dir = './../Unique_Data/';
     datafiles = []
     for Year in range(startYear, endYear):
@@ -147,4 +159,5 @@ def testRecalls(startYear=2007, endYear=2008):
     csv_rd1.close()
 
 if __name__ == "__main__":
+    testRecalls(2007,2009)
     testRecalls()
