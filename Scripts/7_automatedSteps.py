@@ -24,14 +24,14 @@ if(pieces["Retrieve"]):
     os.chdir(basepath)
 
     #get data from 2006-2012
-    for Year in range(2007, 2008):
+    for Year in range(2007, 2009):
         print 'Year '+str(Year);
         startYear = Year;
         endYear = Year;
 
         #full year at a time
         startMonth = 1;
-        endMonth = 2;
+        endMonth = 12;
 
         #get the data
         retrieve.getData(startYear, startMonth, endYear, endMonth)
@@ -43,10 +43,12 @@ if(pieces["Unique"]):
     print "-------------------------------"
     print "Ensuring Unique Recalls"
     print "-------------------------------"
-    files = []
-    for Year in range(2007, 2008):
-        filename = ''+str(Year)+'.xls'
-        files.append(filename)
+    files = os.listdir("./../Original_Data")
+    # for Year in range(2007, 2009):
+    #     filename = str(Year)+'.xls'
+    #     files.append(filename)
+    # for fl in files:
+    #     print fl
     unique.elimCopyReasons('./../Original_Data', files, './../Unique_Data')
 
     #files = ["Unique_Computer_Recalls_2007_2011_copy.xls"]
@@ -59,7 +61,7 @@ if(pieces["ClassifyS1"]):
     print "-------------------------------"
     print "Classifying Remaining Recalls"
     print "-------------------------------"
-    testCompS1.testRecalls(startYear=2007, endYear=2008)
+    testCompS1.testRecalls()
 
 '''
     SCRIPT 4 --> Computer vs. Not Computer Classification Stage 2
@@ -85,7 +87,7 @@ if(pieces["Procodes"]):
 
     Procodes_Hash = procodes.developHash(pathProc, procodeFile)
     #identify procodes for these recalls
-    datafiles = ["2007.xls"]
+    datafiles = os.listdir("../Original_Data")
     for i in xrange(len(datafiles)):
         datafiles[i] = 'unique'+datafiles[i]
     procodes.compareRecall(pathProc, pathData, procodeFile, Procodes_Hash, datafiles)
