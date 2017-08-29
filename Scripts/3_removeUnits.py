@@ -7,7 +7,7 @@ def remUnits(text):
 	if(text == ' ' or text.lower() == 'unknown' or text.lower() == 'to be determined'):
 		return 'N/A'
 	if('million' in text.lower()):
-		pieces = text.replace('~', '').split()
+		pieces = text.replace('~', '').replace(',','').split()
 		idx = pieces.index('million') - 1
 		million_mult = 1000000
 		try:
@@ -117,24 +117,24 @@ def remUnits(text):
 	return tot
 
 if(__name__ == '__main__'):
-	'''filename = '../../New_Data/2007.xls'
-	dmpfile = '../../New_Data/dumps_remUnits.txt'
-	fils = open(dmpfile, 'wb')
-	workbook = xlrd.open_workbook(filename)
-	worksheet = workbook.sheet_by_index(0)
-	idx = -1
-	recall = -1
-	for i in xrange(worksheet.ncols):
-		if('Commerce' in worksheet.cell_value(0, i)):
-			idx = i
-		if('Number' in worksheet.cell_value(0, i)):
-			recall = i
-	for k in range(1, worksheet.nrows):
-		#if(worksheet.cell_value(k, recall) == 'Z-0364-2007'):
-		fils.write(worksheet.cell_value(k, recall) + ' ')
-		fils.write(str(worksheet.cell_value(k, idx)) + '\n')
-		fils.write(str(remUnits(worksheet.cell_value(k, idx))) + '\n')
-	fils.close()'''
+	# '''filename = '../../New_Data/2007.xls'
+	# dmpfile = '../../New_Data/dumps_remUnits.txt'
+	# fils = open(dmpfile, 'wb')
+	# workbook = xlrd.open_workbook(filename)
+	# worksheet = workbook.sheet_by_index(0)
+	# idx = -1
+	# recall = -1
+	# for i in xrange(worksheet.ncols):
+	# 	if('Commerce' in worksheet.cell_value(0, i)):
+	# 		idx = i
+	# 	if('Number' in worksheet.cell_value(0, i)):
+	# 		recall = i
+	# for k in range(1, worksheet.nrows):
+	# 	#if(worksheet.cell_value(k, recall) == 'Z-0364-2007'):
+	# 	fils.write(worksheet.cell_value(k, recall) + ' ')
+	# 	fils.write(str(worksheet.cell_value(k, idx)) + '\n')
+	# 	fils.write(str(remUnits(worksheet.cell_value(k, idx))) + '\n')
+	# fils.close()'''
 	print remUnits('694/10-pack boxes')
 
 ### KNOWN BAD RECALL #'s to look at ###
