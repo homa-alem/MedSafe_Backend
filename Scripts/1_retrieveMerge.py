@@ -144,7 +144,7 @@ def initProg(startDate, endDate):
 
                                 #create soup from this html
                                 soup2 = BeautifulSoup(mech.response().read())
-                                #table2 = soup2.find("table", border="0", cellpadding="0", cellspacing=5, width="600")
+                                table2 = soup2.find("table", border="0", cellpadding="0", cellspacing=5, width="600")
                                 for tag in soup2.findAll(text=re.compile('Review Panel')):
         							table2 = tag.findParent('table')
         							break;
@@ -169,7 +169,11 @@ def initProg(startDate, endDate):
 
                         #find the table containing the information needed (in this case unique identifier is that cellpadding is 2)
                         tables = soup.findAll("table")
-                        table = [t for t in tables if t.find(text=re.compile('Recall Number'))][0]
+                        table = [t for t in tables if t.find(text=re.compile('Recall Number'))]
+                        if(len(table)!=0):
+                            table = table[0]
+                        else:
+                            continue
 
                         if(table == None):
                                 continue
@@ -228,7 +232,7 @@ def initProg(startDate, endDate):
                                 TTterm_indx = fields.index('Time_to_Terminate')
                                 varis[TTterm_indx] = (date2 - date1).days
                             else:
-                                print "no date with status givenS"
+                                print "no date with status given"
                                 varis[tdate_indx] = "N/A"
                                 TTterm_indx = fields.index('Time_to_Terminate')
                                 varis[TTterm_indx] = "N/A"
@@ -244,7 +248,7 @@ def initProg(startDate, endDate):
                         for i in range(0, len(varis)):
                                 varis_TOT[i].append(varis[i])
         return varis_TOT
-# TODO finish this method: recursive, calls on smaller sections of the month until we get to less than 500
+
 def splitSearch(startDate, endDate, month, year):
     #find the day between the startDate and endDate
     print "splitSearch: "+ startDate+", "+endDate
@@ -333,19 +337,6 @@ def getData(startYear, startMonth, endYear, endMonth):
                         #if dataset too big, split month in half and then go
                         if (response == 'too big'):
                             splitSearch(startDate, endDate, month, year)
-                        # if (response == 'too big'):
-                        #         startDate1 = startDate
-                        #         endDate1 = str(month).zfill(2)+'/'+'18'+'/'+str(year)
-                        #         startDate2 = str(month).zfill(2)+'/'+'18'+'/'+str(year)
-                        #         endDate2 = endDate
-                        #
-                        #         response = initProg(startDate1, endDate1)
-                        #         response2 = initProg(startDate2, endDate2)
-                        #         # Merge two responses
-                        #         for k in range(0, len(response2)):
-                        #                 for i in range(0, len(response2[0])):
-                        #                         print response[k]
-                        #                         response[k].append(response2[k][i]);
                         for i in range(0, len(response[0])):
                                 for k in range(0, len(response)):
                                         worksheet.write(curr_row, k, response[k][i])
