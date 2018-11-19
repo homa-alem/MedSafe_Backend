@@ -31,10 +31,12 @@ test_files=[]
 for i in range(len(uniqueFiles)):
     fileNm = uniqueFiles[i]
     if re.match("unique[0123456789]{4}.xls",fileNm) != None:
-        test_files.append(fileNm.split('.')[0])
+        if (int(fileNm.split('.')[0].split('unique')[1]) > 2011):
+        	test_files.append(fileNm.split('.')[0])
+print test_files
 
 # test_files = ["unique2007", "unique2008"]
-#test_files = ["unique2012","unique2013"]
+# test_files = ["unique2012","unique2013"]
 
 def selectFeatures(train_set, train_text, k):
     dic = open(data_dir+"best_keywords.txt", "wb")
